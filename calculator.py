@@ -5,7 +5,9 @@ print("1. Addition")
 print("2. Multiplication")
 print("3. Division")
 print("4. Subtraction")
-print("5. Exit")
+print("5. Percentage")
+print("6. Modulus")
+print("7. Exit")
 c=0
 while True:
     op = input("what you want to do >>")
@@ -25,12 +27,22 @@ while True:
         b = float(input("Enter Second number>"))
         c = a/b
         print("Devision is",c)
-    elif op== "4":
+    elif op == "4":
         a = float(input("Enter First number>"))
         b = float(input("Enter Second number>"))
         c = a - b
         print("Subtraction is", c)
     elif op == "5":
+        a = float(input("Enter First number>"))
+        b = float(input("Enter Second number>"))
+        c = (a/b)*100
+        print("Percentage of 1st with respect of 2nd is", c)
+    elif op == "6":
+        a = float(input("Enter First number>"))
+        b = float(input("Enter Second number>"))
+        c = a%b
+        print("remainder is", c)
+    elif op == "7":
         print("Thank You!!")
         break
     else:
