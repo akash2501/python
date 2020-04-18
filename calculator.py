@@ -10,9 +10,24 @@ print("6. Modulus")
 print("7. Exit")
 c=0
 def add(x,y):
-    c = a +b
+    c = x + y
     print("Addition is",c)
 
+def multiply(x,y):
+    c = x*y
+    print("Multiplication is",c)
+def divide(x,y):
+    c = x/y
+    print("Division is",c)
+def subtract(x,y):
+    c = x - y
+    print("Subtraction is",c)
+def percent(x,y):
+    c = (x/y)*100
+    print("Percentage of A with respect to B is",c,"%")
+def remainder(x,y):
+    c = x%y
+    print("Remainder of 1st when divided with 2nd is",c)
 while True:
     op = input("what you want to do >>")
 
@@ -23,33 +38,29 @@ while True:
     elif op == "2":
         a = float(input("Enter First number>"))
         b = float(input("Enter Second number>"))
-        c = a*b
-        print("Multiplication is",c)
+        multiply(a,b)
+
     elif op == "3":
         a = float(input("Enter First number>"))
         b = float(input("Enter Second number>"))
-        c = a/b
-        print("Devision is",c)
+        divide(a,b)
     elif op == "4":
         a = float(input("Enter First number>"))
         b = float(input("Enter Second number>"))
-        c = a - b
-        print("Subtraction is", c)
+        subtract(a,b)
     elif op == "5":
         a = float(input("Enter First number>"))
         b = float(input("Enter Second number>"))
-        c = (a/b)*100
-        print("Percentage of 1st with respect of 2nd is", c)
+        percent(a,b)
     elif op == "6":
         a = float(input("Enter First number>"))
         b = float(input("Enter Second number>"))
-        c = a%b
-        print("remainder is", c)
+        remainder(a,b)
     elif op == "7":
         print("Thank You!!")
         break
     else:
-        print("PLease give proper operation")
+        print("PLease give proper operation!")
 
 
 
