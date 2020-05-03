@@ -58,6 +58,7 @@ while True:
         remainder(a,b)
     elif op == "7":
         print("Thank You!!")
+        time.sleep(5)
         break
     else:
         print("PLease give proper operation!")
