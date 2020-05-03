@@ -1,6 +1,7 @@
-file = open("text.txt","r")
-f1 = file.readlines()
-for str in f1:
+file = open("text.txt","r", encoding="utf-8")
+
+file2 = open("encoded.txt","w")
+for str in file:
     str2 = str.replace("A","f")
     str3 = str2.replace("B","k")
     str4 = str3.replace("C","z")
@@ -76,5 +77,5 @@ for str in f1:
     str74= str73.replace(">", "n")
     str75= str74.replace("<", "q")
     print("Normal text>>",str)
-    print("Encoded text>>",str75)
+    file2.write(str75 )
 
