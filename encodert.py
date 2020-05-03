@@ -76,6 +76,5 @@ for str in file:
     str73= str72.replace("|", "I")
     str74= str73.replace(">", "n")
     str75= str74.replace("<", "q")
-    print("Normal text>>",str)
     file2.write(str75 )
 
