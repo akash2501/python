@@ -4,10 +4,14 @@ import xlsxwriter
 
 url = "https://api.covid19india.org/data.json"
 url2 = "https://api.covid19india.org/v2/state_district_wise.json"
+url3 = "https://api.covid19india.org/zones.json"
 uh = urllib.request.urlopen(url)
 data = uh.read().decode()
 uh2 = urllib.request.urlopen(url2)
-data2 = uh.read().decode()
+data2 = uh2.read().decode()
+uh3 = urllib.request.urlopen(url3)
+data3 = uh3.read().decode()
+js3 = json.loads(data3)
 print("Data Retrived")
 js = json.loads(data)
 js2 = json.loads(data2)
@@ -20,6 +24,7 @@ check = 0
 row_worksheet1,col_worksheet1 = 1,0
 row_worksheet2,col_worksheet2 = 1,0
 row_worksheet3,col_worksheet3 = 1,0
+row_worksheet4,col_worksheet4 = 1,0
 print("1.Total Cases")
 print("2.Total Recovered")
 print("3.Total Active Cases")
@@ -112,6 +117,9 @@ while True:
             worksheet3 = workbook.add_worksheet('Tests')
             worksheet4 = workbook.add_worksheet('District Wise')
             bold = workbook.add_format({'bold': True})
+            Red = workbook.add_format({'bg_color': '#FFC7CE'})
+            Orange = workbook.add_format({'bg_color': '#FFEB9C'})
+            Green = workbook.add_format({ 'bg_color': '#C6EFCE'})
             num_type = workbook.add_format({'num_format': '0'})
 
             worksheet1.write('A1', 'Date', bold)
@@ -148,6 +156,14 @@ while True:
             worksheet3.write('I1', 'Total positive cases', bold)
             worksheet3.write('J1', 'Total sample tested', bold)
             worksheet3.set_column('A:J', 30)
+            worksheet4.write('A1','State',bold)
+            worksheet4.write('B1','District',bold)
+            worksheet4.write('C1','Confirmed',bold)
+            worksheet4.write('D1','Active',bold)
+            worksheet4.write('E1','Recovered',bold)
+            worksheet4.write('F1','Deceased',bold)
+            worksheet4.set_column('A:F',30)
+
           
 
             std = ["lastupdatedtime","state","statecode","active","confirmed","deaths","recovered","deltaconfirmed","deltadeaths","deltarecovered"]
@@ -156,6 +172,31 @@ while True:
                     worksheet2.write(row_worksheet2, col_worksheet2 + k, js["statewise"][i][std[k]])
                 row_worksheet2 = row_worksheet2 + 1
                 col_worksheet2 = 0
+            dist = []
+            distdata = ["district","confirmed","active","recovered","deceased"]
+            zonesss = ["Red","Orange","Green"]
+            for m in range(735):
+                dist.append(js3["zones"][m]["district"])
+            for i in range(36):
+                state = js2[i]["state"]
+                for j in range(len(js2[i]["districtData"])):
+                    for k in range(5):
+                        try:
+                            y = dist.index(js2[i]["districtData"][j]["district"])
+                            x = zonesss.index(js3["zones"][y]["zone"])
+                            if x == 0:
+                                worksheet4.write(row_worksheet4, col_worksheet4,state,Red)
+                                worksheet4.write(row_worksheet4, col_worksheet4 + k +1,js2[i]["districtData"][j][distdata[k]],Red)
+                            elif x == 1:
+                                worksheet4.write(row_worksheet4, col_worksheet4,state,Orange)
+                                worksheet4.write(row_worksheet4, col_worksheet4 + k +1,js2[i]["districtData"][j][distdata[k]],Orange)
+                            elif x == 2:
+                                worksheet4.write(row_worksheet4, col_worksheet4,state,Green)
+                                worksheet4.write(row_worksheet4, col_worksheet4 + k +1,js2[i]["districtData"][j][distdata[k]],Green)
+                        except:
+                            worksheet4.write(row_worksheet4, col_worksheet4,state)
+                            worksheet4.write(row_worksheet4, col_worksheet4 + k +1,js2[i]["districtData"][j][distdata[k]],)
+                    row_worksheet4 = row_worksheet4 + 1
 
             
             cts = ["date","dailyconfirmed","dailydeceased","dailyrecovered","totalconfirmed","totaldeceased","totalrecovered"]
@@ -164,7 +205,7 @@ while True:
                     worksheet1.write(row_worksheet1, col_worksheet1 + k, js["cases_time_series"][i][cts[k]])
                 row_worksheet1 = row_worksheet1 + 1
                 col_worksheet1 = 0
-
+            
             test = ["updatetimestamp","individualstestedperconfirmedcase","positivecasesfromsamplesreported","samplereportedtoday",
                     "testpositivityrate","testsconductedbyprivatelabs","testsperconfirmedcase","totalindividualstested","totalpositivecases","totalsamplestested"]
             for i in range(len(tested_data)):
@@ -172,7 +213,6 @@ while True:
                     worksheet3.write(row_worksheet3, col_worksheet3 + k, js["tested"][i][test[k]])
                 row_worksheet3 = row_worksheet3 + 1
                 col_worksheet3 = 0
-            for i in range()
 
             workbook.close()
             check = 1
