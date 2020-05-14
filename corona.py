@@ -1,24 +1,14 @@
-import json
-import urllib.request, urllib.parse, urllib.error
-import xlsxwriter
-import os.path
+import json,urllib.request, urllib.parse, urllib.error,xlsxwriter,os.path
 
-url = "https://api.covid19india.org/data.json"
-url2 = "https://api.covid19india.org/v2/state_district_wise.json"
-url3 = "https://api.covid19india.org/zones.json"
-uh = urllib.request.urlopen(url)
-data = uh.read().decode()
-uh2 = urllib.request.urlopen(url2)
-data2 = uh2.read().decode()
-uh3 = urllib.request.urlopen(url3)
-data3 = uh3.read().decode()
-js3 = json.loads(data3)
+
+url,url2,url3 = "https://api.covid19india.org/data.json","https://api.covid19india.org/v2/state_district_wise.json", "https://api.covid19india.org/zones.json"
+
+uh,uh2,uh3 = urllib.request.urlopen(url),urllib.request.urlopen(url2),urllib.request.urlopen(url3)
+data,data2,data3 = uh.read().decode(),uh2.read().decode(),uh3.read().decode()
+js,js2,js3 = json.loads(data),json.loads(data2),json.loads(data3)
+
+tdate,state_data,tested_data = js["cases_time_series"],js["statewise"],js["tested"]
 print("Data Retrived")
-js = json.loads(data)
-js2 = json.loads(data2)
-tdate = js["cases_time_series"]
-state_data = js["statewise"]
-tested_data = js["tested"]
 
 row_worksheet1,col_worksheet1,row_worksheet2,col_worksheet2,row_worksheet3,col_worksheet3,row_worksheet4,col_worksheet4 = 1,0,1,0,1,0,1,0
 
@@ -32,7 +22,6 @@ def createdatabase():
     Red = workbook.add_format({'bg_color': '#FFC7CE'})
     Orange = workbook.add_format({'bg_color': '#FFEB9C'})
     Green = workbook.add_format({ 'bg_color': '#C6EFCE'})
-    num_type = workbook.add_format({'num_format': '0'})
 
     worksheet1.write('A1', 'Date', bold)
     worksheet1.write('B1', 'Daily Confirmed', bold)
@@ -41,8 +30,7 @@ def createdatabase():
     worksheet1.write('E1', 'Total Confirmed', bold)
     worksheet1.write('F1', 'Total Deceased', bold)
     worksheet1.write('G1', 'Total Recovered', bold)
-    worksheet1.set_column('A:A', 15)
-    worksheet1.set_column('B:G', 18)
+    worksheet1.set_column('A:G', 18)
 
     worksheet2.write('A1', 'Last Updated Time', bold)
     worksheet2.write('B1', 'State', bold)
@@ -54,8 +42,7 @@ def createdatabase():
     worksheet2.write('H1', 'Delta Confirmed', bold)
     worksheet2.write('I1', 'Delta Deceased', bold)
     worksheet2.write('J1', 'Delta Recovered', bold)
-    worksheet2.set_column('A:A', 25)
-    worksheet2.set_column('B:J', 18)
+    worksheet2.set_column('A:A', 25),worksheet2.set_column('B:J', 18)
 
     worksheet3.write('A1', 'Update Time Stamp', bold)
     worksheet3.write('B1', 'Individuals tested per confirmed cases', bold)
@@ -84,7 +71,6 @@ def createdatabase():
         for k in range(10):
             worksheet2.write(row_worksheet2, col_worksheet2 + k, js["statewise"][i][std[k]])
         row_worksheet2 = row_worksheet2 + 1
-        col_worksheet2 = 0
     dist = []
     distdata = ["district","confirmed","active","recovered","deceased"]
     zonesss = ["Red","Orange","Green"]
@@ -127,16 +113,9 @@ def createdatabase():
         row_worksheet3 = row_worksheet3 + 1
 
     workbook.close()
-print("1.Total Cases")
-print("2.Total Recovered")
-print("3.Total Active Cases")
-print("4.Total Dead")
-print("5.Total Overview")
-print("6.State Data")
-print("7.New Cases in India")
-print("8.Cases on date")
-print("9.Create DataBase")
-print("10.Exit")
+print("1.Total Cases\n2.Total Recovered\n3.Total Active Cases\n4.Total Dead\n5.Total Overview\n6.State Data\n7.New Cases in India\n8.Cases on date")
+print("9.Create DataBase\n10.Exit")
+
 while True:
     op = input("what you want to do >>")
 
@@ -153,15 +132,12 @@ while True:
         l = js["statewise"][0]["deaths"]
         print("Total Deaths >>", l)
     elif op == "5":
-        confirm = js["statewise"][0]["confirmed"]
-        re = js["statewise"][0]["recovered"]
-        acti = js["statewise"][0]["active"]
-        dead = js["statewise"][0]["deaths"]
-        print("Total Confirmed >>", confirm)
-        print("Total Recovered >>", re)
-        print("Total Active >>", acti)
-        print("Total Dead >>", dead)
-
+        print("...............................................\n...............................................")
+        print("Total Confirmed >>",js["statewise"][0]["confirmed"])
+        print("Total Recovered >>",js["statewise"][0]["recovered"])
+        print("Total Active >>", js["statewise"][0]["active"])
+        print("Total Dead >>", js["statewise"][0]["deaths"])
+        print("...............................................\n...............................................")
     elif op == "6":
         name = input("Enter the name of the state code>>")
         for i in range(38):
@@ -179,14 +155,10 @@ while True:
                 print("........................................")
                 print("........................................")
     elif op == "7":
-        confirm = js["statewise"][0]["deltaconfirmed"]
-        re = js["statewise"][0]["deltarecovered"]
-        dead = js["statewise"][0]["deltadeaths"]
-        lastup = js["statewise"][0]["lastupdatedtime"]
-        print("New Confirmed >>", confirm)
-        print("New Recovered >>", re)
-        print("New Deaths >>", dead)
-        print("Last updated at>>", lastup)
+        print("New Confirmed >>", js["statewise"][0]["deltaconfirmed"])
+        print("New Recovered >>", js["statewise"][0]["deltarecovered"])
+        print("New Deaths >>",js["statewise"][0]["deltadeaths"])
+        print("Last updated at>>", js["statewise"][0]["lastupdatedtime"])
         print("........................................")
         print("........................................")
     elif op == "8":
@@ -195,29 +167,26 @@ while True:
             odate = js["cases_time_series"][i]["date"]
             odate = odate.rstrip()
             if input_date == odate:
-                dconfirm = js["cases_time_series"][i]["dailyconfirmed"]
-                tconfirm = js["cases_time_series"][i]["totalconfirmed"]
-                dre = js["cases_time_series"][i]["dailyrecovered"]
-                tre = js["cases_time_series"][i]["totalrecovered"]
-                ddead = js["cases_time_series"][i]["dailydeceased"]
-                tdead = js["cases_time_series"][i]["totaldeceased"]
+                
                 print(odate)
-                print("Confirmed on that day>>", dconfirm)
-                print("Recovered on that day>>", dre)
-                print("Deaths on that day>>", ddead)
-                print("Total Confirmed >>", tconfirm)
-                print("Total Recovered >>", tre)
-                print("Total Deaths >>", tdead)
+                print("Confirmed on that day>>", js["cases_time_series"][i]["dailyconfirmed"])
+                print("Recovered on that day>>", js["cases_time_series"][i]["dailyrecovered"])
+                print("Deaths on that day>>", js["cases_time_series"][i]["dailydeceased"])
+                print("Total Confirmed >>", js["cases_time_series"][i]["totalconfirmed"])
+                print("Total Recovered >>", js["cases_time_series"][i]["totalrecovered"])
+                print("Total Deaths >>", js["cases_time_series"][i]["totaldeceased"])
                 print("........................................")
                 print("........................................")
     elif op == "9":
-
+        
         if os.path.exists('Corona_DataBase.xlsx') == True:
             print("DataBase already exists")
-            check = input("Do you want to update Database")
+            check = input("Do you want to update Database>>")
             if check == "yes":
                 createdatabase()
                 print("Database updated")
+            elif check == "no":
+                print("Thank you")
         else:
             createdatabase()
             print("Database Created")
